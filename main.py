@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse  # <- ADDED
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -21,12 +22,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/", StaticFiles(directory=".", html=True), name="static")
+app.mount("/", StaticFiles(directory=".", html=True), name="static") # <- ONLY 1 TIME
 
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok"}
 
-@app.get("/")
-async def root():
-    return {"message": "MarkingAI API is running. See /docs for API documentation."}
+@app.get("/{path:path}")  # <- REPLACED THE OLD @app.get("/")
+async def serve_frontend(path: str):
+    return FileResponse("index.html")
