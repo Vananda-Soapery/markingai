@@ -28,5 +28,8 @@ async def health_check():
     return {"status": "ok"}
 
 @app.get("/{path:path}")
+import os
+
+@app.get("/{path:path}")
 async def serve_frontend(path: str):
     return FileResponse(os.path.join(os.getcwd(), "index.html"))
